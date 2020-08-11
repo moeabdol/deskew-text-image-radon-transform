@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Automatically detect rotation and line spacing of an image of text using
@@ -66,7 +67,13 @@ if __name__ == "__main__":
     plt.yscale('log')
 
     # Rotate original image and show
-    image = Image.open(image_file).rotate(90 - rotation)
+    image = Image.open(image_file)
+    longest_dim = image.height if image.height > image.width else image.width
+    back_image = Image.new("RGB", (longest_dim, longest_dim), color="white")
+    offset = ((longest_dim - image.width) // 2, (longest_dim - image.height) // 2)
+    back_image.paste(image, offset)
+    image = back_image.rotate(90 - rotation)
+
     plt.subplot(2, 3, 5)
     plt.imshow(image)
     plt.show()
