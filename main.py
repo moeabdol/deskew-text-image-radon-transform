@@ -29,12 +29,12 @@ if __name__ == "__main__":
     image_file = args.image
     image = np.asarray(Image.open(image_file).convert("L"))
     image = image - np.mean(image)
-    plt.subplot(2, 2, 1)
+    plt.subplot(2, 3, 1)
     plt.imshow(image)
 
     # Do the radon transform and show results
     sinogram = radon(image)
-    plt.subplot(2, 2, 2)
+    plt.subplot(2, 3, 2)
     plt.imshow(sinogram.T, aspect="auto")
     plt.gray()
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # Plot the busy row
     row = sinogram[:, rotation]
     N = len(row)
-    plt.subplot(2, 2, 3)
+    plt.subplot(2, 3, 3)
     plt.plot(row)
 
     # Take spectrum of busy row and find line spacing
@@ -60,9 +60,13 @@ if __name__ == "__main__":
     line_spacing = N / frequency  # pixels
     print('Line spacing: {:.2f} pixels'.format(line_spacing))
 
-    plt.subplot(2, 2, 4)
+    plt.subplot(2, 3, 4)
     plt.plot(abs(spectrum))
     plt.axvline(frequency, color='r')
     plt.yscale('log')
 
+    # Rotate original image and show
+    image = Image.open(image_file).rotate(90 - rotation)
+    plt.subplot(2, 3, 5)
+    plt.imshow(image)
     plt.show()
